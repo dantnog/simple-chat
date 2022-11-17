@@ -2,6 +2,8 @@
   "name": "simple-chat",
   "private": true,
   "version": "0.0.0",
+  "author": "Daniel Nogueira",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
