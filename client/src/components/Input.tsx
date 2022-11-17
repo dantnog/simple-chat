@@ -6,7 +6,7 @@ export default function Input({value, onChange}: InputProps) {
       type="text" 
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="outline-none bg-transparent h-full w-full" 
+      className="outline-none bg-transparent h-full w-full px-2" 
     />
   )
 }

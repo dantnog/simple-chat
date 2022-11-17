@@ -1,16 +1,26 @@
 import Button from '../components/Button'
 import { HiOutlineLogout } from 'react-icons/hi'
 import SideBarProps from '../types/SideBarProps'
+import { IoMdMoon, IoMdSunny } from 'react-icons/io'
+import { useState } from 'react'
 
 export default function SideBar({rooms, setActive}: SideBarProps) {
-  function handleLogout() {
-    alert('Out!')
+  const [dark, setDark] = useState(false)
+
+  function handleTheme() {
+    document.documentElement.classList.toggle('dark')
+    setDark(!dark)
   }
 
   return (
     <>
-      <div className="block border-l-4 border-lime-400 dark:border-lime-600">
+      <div className="py-2 border-l-4 border-lime-400 dark:border-lime-600 flex justify-between">
         <h2 className="ml-4 font-semibold text-2xl tracking-wide">Simple Chat</h2>
+        {
+         dark 
+         ? <Button type="button" theme={3} onClick={handleTheme} children={<IoMdSunny />} />
+         : <Button type="button" theme={3} onClick={handleTheme} children={<IoMdMoon />} />
+        }
       </div>
       <div className="h-full overflow-y-scroll flex flex-col space-y-2">
       {
@@ -19,9 +29,6 @@ export default function SideBar({rooms, setActive}: SideBarProps) {
         ))
       }
       </div>
-      <Button name="Logout" type="button" theme={3} onClick={handleLogout} 
-        children={<HiOutlineLogout className="inline-block ml-2" />} 
-      />
     </>
   )
 }
