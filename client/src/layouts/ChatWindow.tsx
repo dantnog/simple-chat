@@ -1,12 +1,12 @@
 import Button from '../components/Button'
-import { IoMdSend } from 'react-icons/io'
+import { IoMdSend, IoMdMenu } from 'react-icons/io'
 import { BsFillEmojiSmileFill } from 'react-icons/bs'
 import Input from '../components/Input'
 import { useEffect, useRef, useState } from 'react'
 import ChatWindowProps from '../types/ChatWindowProps'
 import MessageProps from '../types/MessageProps'
 
-export default function ChatWindow({nick, active, socket}: ChatWindowProps) {
+export default function ChatWindow({nick, active, socket, showSideBar}: ChatWindowProps) {
   const [message, setMessage] = useState('')
   const [history, setHistory] = useState<MessageProps[]>([])
   const chat = useRef(null)
@@ -46,7 +46,7 @@ export default function ChatWindow({nick, active, socket}: ChatWindowProps) {
 
   return (
     <>
-      <div className="flex justify-between py-2 rounded-r-md bg-slate-300 dark:bg-slate-700 border-l-4 border-lime-400 dark:border-lime-600">
+      <div className="flex justify-between py-2 pr-2 rounded-r-md bg-slate-300 dark:bg-slate-700 border-l-4 border-lime-400 dark:border-lime-600">
         {
           active
           ? <h2 className="ml-4 font-semibold text-2xl tracking-wide">{active}</h2>
@@ -54,10 +54,14 @@ export default function ChatWindow({nick, active, socket}: ChatWindowProps) {
         }
         {
           nick
-          ? <p className="my-auto mr-4">{nick}</p>
+          ? <p className="hidden sm:block my-auto mr-4">{nick}</p>
           : null
         }
+        <div className="block sm:hidden">
+          <Button type="button" theme={3} onClick={() => showSideBar()} children={<IoMdMenu className="text-xl" />} />
+        </div>
       </div>
+
       <div className="h-full overflow-y-scroll my-2 space-y-2" ref={chat}>
       {
         history?.map((item, index) => (
@@ -78,6 +82,7 @@ export default function ChatWindow({nick, active, socket}: ChatWindowProps) {
         ))
       }
       </div>
+
       <form onSubmit={handleSubmit} className="flex h-9 bg-slate-300 dark:bg-slate-700 rounded-lg overflow-hidden">
         <Button type="button" theme={4} onClick={handleEmoji} 
           children={<BsFillEmojiSmileFill className="" />} 
