@@ -3,4 +3,5 @@ export default interface MessageProps {
   message: string 
   own: boolean 
   bot: boolean
+  avatar: string
 }

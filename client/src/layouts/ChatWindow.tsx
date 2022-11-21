@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import ChatWindowProps from '../types/ChatWindowProps'
 import MessageProps from '../types/MessageProps'
 
-export default function ChatWindow({nick, active, socket, showSideBar}: ChatWindowProps) {
+export default function ChatWindow({nick, active, socket, showSideBar, avatar}: ChatWindowProps) {
   const [message, setMessage] = useState('')
   const [history, setHistory] = useState<MessageProps[]>([])
   const chat = useRef(null)
@@ -14,7 +14,7 @@ export default function ChatWindow({nick, active, socket, showSideBar}: ChatWind
   function handleSubmit(e: any) {
     e.preventDefault()
     if (!message || !nick) return
-    const msg = {nick, message, own: true, bot: false, room: active }
+    const msg = {nick, message, own: true, bot: false, room: active, avatar }
     socket.emit('message', msg)
     setHistory(prev => [...prev, msg])
     setMessage('')
@@ -33,7 +33,7 @@ export default function ChatWindow({nick, active, socket, showSideBar}: ChatWind
   }, [])
 
   useEffect(() => {
-    // clean history by changing room)
+    // clean history by changing room
     setHistory([])
   }, [active])
 
@@ -46,15 +46,16 @@ export default function ChatWindow({nick, active, socket, showSideBar}: ChatWind
 
   return (
     <>
-      <div className="flex justify-between py-2 pr-2 rounded-r-md bg-slate-300 dark:bg-slate-700 border-l-4 border-lime-400 dark:border-lime-600">
+      <div className="flex justify-between items-center h-14 pr-2 rounded-r-md bg-slate-300 dark:bg-slate-700 border-l-4 border-lime-400 dark:border-lime-600">
         {
           active
-          ? <h2 className="ml-4 font-semibold text-2xl tracking-wide">{active}</h2>
-          : <h2 className="ml-4 font-semibold text-2xl tracking-wide">Choose a room</h2>
+          ? <h2 className="ml-4 my-auto font-semibold text-2xl tracking-wide">{active}</h2>
+          : <h2 className="ml-4 my-auto font-semibold text-2xl tracking-wide">Choose a room</h2>
         }
         {
           nick
-          ? <p className="hidden sm:block my-auto mr-4">{nick}</p>
+          ? (<div className='flex'><p className="hidden sm:block my-auto mr-4">{nick}</p>
+            <img src={`data:image/svg+xml;base64,${avatar}`} alt="" className="hidden sm:inline-block h-10" /></div> )
           : null
         }
         <div className="block sm:hidden">
@@ -65,18 +66,23 @@ export default function ChatWindow({nick, active, socket, showSideBar}: ChatWind
       <div className="h-full overflow-y-scroll my-2 space-y-2" ref={chat}>
       {
         history?.map((item, index) => (
-          <div className="block bg-slate-300 dark:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-200 overflow-hidden rounded-md">
+          <div key={index} className="flex place-items-center bg-slate-300 dark:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-200 overflow-hidden rounded-md">
+            {
+              item.avatar && !item.own
+              ? <img src={`data:image/svg+xml;base64,${item.avatar}`} alt="" className="h-8 px-2" />
+              : null
+            }
             {
               !item.own 
               ? item.bot 
-                ? <h4 className="inline-block px-2 bg-lime-400 dark:bg-lime-600 tracking-wide text-slate-800 dark:text-slate-200">{item.nick}</h4>
-                : <h4 className="inline-block px-2 bg-amber-400 dark:bg-amber-600 tracking-wide text-slate-800 dark:text-slate-200">{item.nick}</h4>
+                ? <h4 className="h-8 grid place-items-center px-2 bg-lime-400 dark:bg-lime-600 tracking-wide text-slate-800 dark:text-slate-200">{item.nick}</h4>
+                : <h4 className="my-auto px-2 text-amber-400 text-amber-600 tracking-wide">{item.nick}</h4>
               : null
             }
             {
               item.own
-              ? <p className="px-2 text-right">{item.message}</p>
-              : <p className="inline-block px-2">{item.message}</p>
+              ? <p className="px-2 py-1 ml-auto text-right">{item.message}</p>
+              : <p className="px-2">{item.message}</p>
             }
           </div>
         ))

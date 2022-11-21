@@ -40,7 +40,8 @@ io.on('connection', socket => {
       nick: data.nick, 
       message: data.message,
       own: false,
-      bot: false
+      bot: false, 
+      avatar: data.avatar
     })
   })
 
